@@ -493,3 +493,10 @@ function resetAIOverlay() {
   - Dashboard layout
 */
 
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-scroll]");
+  if (!btn) return;
+
+  const target = document.querySelector(btn.dataset.scroll);
+  target?.scrollIntoView({ behavior: "smooth" });
+});

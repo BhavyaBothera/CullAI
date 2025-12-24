@@ -1504,3 +1504,6 @@ kbd {
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
