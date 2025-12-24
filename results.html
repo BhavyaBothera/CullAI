@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CullAI — Results</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="results.css"/>
+</head>
+
+<body>
+
+<!-- ================= APP BAR ================= -->
+<header class="app-bar">
+  <div class="app-left">
+    <span class="logo">📷</span>
+    <strong>CullAI</strong>
+    <span class="divider"></span>
+    <span class="page-title">Results</span>
+  </div>
+
+  <div class="app-right">
+    <button class="btn ghost" id="backBtn">← Back to Upload</button>
+    <button class="btn ghost" id="compareBtn">Compare (2)</button>
+    <button class="btn ghost" id="downloadSharpBtn">Download Sharp</button>
+    <button class="btn ghost" id="downloadBlurryBtn">Download Blurry</button>
+    <button class="btn ghost" id="downloadSelectedBtn">Download Selected</button>
+    <button class="btn primary" id="downloadAllBtn">Download All</button>
+  </div>
+
+</header>
+
+<!-- ================= RESULTS SUMMARY ================= -->
+<div class="results-summary">
+  <div class="summary-left">
+    <strong id="summaryCounts">0 images</strong>
+    <span id="summaryAverage">Avg sharpness: —</span>
+  </div>
+
+  <div class="summary-right">
+    <span class="mode-badge" id="modeBadge">Mock Data</span>
+  </div>
+</div>
+
+<p class="results-threshold">
+  Sharpness Threshold Used:
+  <strong id="thresholdUsed"></strong>
+</p>
+
+<!-- ================= STATS PANEL ================= -->
+<div class="stats-panel" id="statsPanel">
+  <div class="stat">
+    <span>Total</span>
+    <strong id="statTotal">0</strong>
+  </div>
+  <div class="stat success">
+    <span>Sharp</span>
+    <strong id="statSharp">0</strong>
+  </div>
+  <div class="stat error">
+    <span>Blurry</span>
+    <strong id="statBlurry">0</strong>
+  </div>
+  <div class="stat accent">
+    <span>Selected</span>
+    <strong id="statSelected">0</strong>
+  </div>
+</div>
+
+<!-- ================= FILTER CONTROLS ================= -->
+<div class="filter-bar">
+  <select id="ratingFilter">
+    <option value="0">All Ratings</option>
+    <option value="5">★★★★★</option>
+    <option value="4">★★★★ & up</option>
+    <option value="3">★★★ & up</option>
+    <option value="2">★★ & up</option>
+    <option value="1">★ & up</option>
+  </select>
+
+  <select id="labelFilter">
+    <option value="all">All Labels</option>
+    <option value="green">Green (Keep)</option>
+    <option value="yellow">Yellow (Maybe)</option>
+    <option value="red">Red (Reject)</option>
+  </select>
+</div>
+
+<!-- ================= SELECTION CHIP ================= -->
+<div class="selection-chip hidden" id="selectionChip">
+  <span id="selectionCount">0</span> images selected
+</div>
+
+<!-- ================= RESULTS ================= -->
+<main class="results-page">
+
+  <section class="results-header">
+    <h1>AI Sorting Results</h1>
+    <p>
+      Your photos have been grouped by sharpness and visual clarity.
+    </p>
+  </section>
+
+  <!-- ================= LIVE THRESHOLD CONTROL ================= -->
+<div class="results-threshold-control">
+  <div class="threshold-header">
+    <span>Adjust Sharpness Threshold</span>
+    <strong id="liveThresholdValue">50</strong>
+  </div>
+
+  <input
+    type="range"
+    id="liveThresholdSlider"
+    min="0"
+    max="100"
+    value="50"
+  />
+
+  <div class="threshold-hint">
+    Adjust to re-sort images instantly
+  </div>
+</div>
+
+  <section class="results-grid">
+
+    <!-- SHARP -->
+    <div class="results-column">
+      <h2 class="column-title success">Sharp Photos</h2>
+      <div class="photo-grid" id="sharpResults">
+        <!-- JS injects cards -->
+      </div>
+    </div>
+
+    <!-- BLURRY -->
+    <div class="results-column">
+      <h2 class="column-title error">Blurry Photos</h2>
+      <div class="photo-grid" id="blurryResults">
+        <!-- JS injects cards -->
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ================= LIGHTBOX PREVIEW ================= -->
+<div class="lightbox hidden" id="lightbox">
+  <div class="lightbox-backdrop"></div>
+
+  <div class="lightbox-content">
+    <img id="lightboxImage" src="" alt="Preview"/>
+    <div class="lightbox-meta">
+      <span id="lightboxName"></span>
+      <span id="lightboxScore"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= COMPARE MODE ================= -->
+<div class="compare-overlay hidden" id="compareOverlay">
+  <div class="compare-backdrop"></div>
+
+  <div class="compare-panel">
+    <div class="compare-header">
+      <h3>Compare Images</h3>
+      <button class="btn ghost" id="closeCompareBtn">Close</button>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-image">
+        <img id="compareImg1" />
+        <div class="compare-meta" id="compareMeta1"></div>
+      </div>
+
+      <div class="compare-image">
+        <img id="compareImg2" />
+        <div class="compare-meta" id="compareMeta2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GLOBAL LOADER ================= -->
+<div class="global-loader hidden" id="globalLoader">
+  <div class="loader-spinner"></div>
+  <p>Processing…</p>
+</div>
+
+<!-- ================= TOAST CONTAINER ================= -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ================= SHORTCUTS OVERLAY ================= -->
+<div class="shortcuts-overlay hidden" id="shortcutsOverlay">
+  <div class="shortcuts-backdrop"></div>
+
+  <div class="shortcuts-panel">
+    <h3>Keyboard Shortcuts</h3>
+
+    <div class="shortcut-group">
+      <h4>Navigation</h4>
+      <p><kbd>←</kbd> / <kbd>→</kbd> Navigate images</p>
+      <p><kbd>Esc</kbd> Close preview / overlay</p>
+    </div>
+
+    <div class="shortcut-group">
+      <h4>Selection</h4>
+      <p><kbd>Space</kbd> Select / Deselect image</p>
+      <p><kbd>S</kbd> Mark Sharp</p>
+      <p><kbd>B</kbd> Mark Blurry</p>
+    </div>
+
+    <div class="shortcut-group">
+      <h4>Rating</h4>
+      <p><kbd>1</kbd>–<kbd>5</kbd> Star rating</p>
+      <p><kbd>G</kbd> Green label</p>
+      <p><kbd>Y</kbd> Yellow label</p>
+      <p><kbd>R</kbd> Red label</p>
+    </div>
+
+    <div class="shortcut-group">
+      <h4>Compare</h4>
+      <p>Select 2 images → <kbd>Compare</kbd> button</p>
+    </div>
+
+    <div class="shortcut-footer">
+      Press <kbd>?</kbd> anytime to toggle this panel
+    </div>
+  </div>
+</div>
+
+<script src="ui.js"></script>
+<script src="results.js"></script>
+</body>
+</html>

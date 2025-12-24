@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CullAI — AI Photo Sorting Platform</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="three-scene.js"></script>
+
+</head>
+
+<body>
+
+    <canvas id="three-canvas" aria-hidden="true"></canvas>
+<div id="app">
+
+        <!-- Floating Photography Elements -->
+    <div class="floating-elements" aria-hidden="true">
+        <div class="floating-element aperture">
+            <i class="fas fa-camera" aria-hidden="true"></i>
+        </div>
+        <div class="floating-element lens">
+            <i class="fas fa-camera-retro" aria-hidden="true"></i>
+        </div>
+        <div class="floating-element shutter">
+            <i class="fas fa-bolt" aria-hidden="true"></i>
+        </div>
+    </div>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar">
+    <div class="nav-left">
+      <span class="logo">📷</span>
+      <strong>CullAI</strong>
+    </div>
+
+    <nav class="nav-center">
+      <a class="active">Home</a>
+      <a href="#upload">Upload</a>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it Works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="nav-right">
+      <button class="btn ghost">Login</button>
+      <button class="btn primary">Try Demo</button>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero-3d">
+      <h1>
+        AI That Understands<br/>
+        <span>Your Photography</span>
+      </h1>
+
+      <p>
+        CullAI automatically sorts your photos by sharpness,
+        clarity, and quality — so you keep only the best.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn primary large">Start Uploading</button>
+        <button class="btn ghost large">See How It Works</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== UPLOAD LAB ===================== -->
+  <section class="upload-section" id="upload">
+    <h2 class="section-title">Upload Your Photos</h2>
+
+    <div class="upload-lab">
+      <div class="upload-zone" id="uploadZone">
+
+        <div class="upload-icon">⬆️</div>
+
+        <h3 id="uploadText">Drop images here</h3>
+        <p class="upload-subtext">or click to browse (images only)</p>
+
+        <div class="upload-info" id="uploadInfo">
+          0 / 20 images · 0 MB / 10 MB
+        </div>
+
+        <div class="upload-error hidden" id="uploadError"></div>
+
+        <input
+          type="file"
+          id="fileInput"
+          hidden
+          multiple
+          accept="image/*"
+        />
+      </div>
+
+      <!-- ================= THRESHOLD CONTROL ================= -->
+<div class="threshold-control">
+  <div class="threshold-header">
+    <span>Sharpness Threshold</span>
+    <strong id="thresholdValue">50</strong>
+  </div>
+
+  <input
+    type="range"
+    id="thresholdSlider"
+    min="0"
+    max="100"
+    value="50"
+  />
+
+  <div class="threshold-hint">
+    Lower = more forgiving · Higher = more strict
+  </div>
+</div>
+
+      <!-- ACTION -->
+      <button
+        class="btn primary large disabled"
+        id="startAnalysisBtn"
+        disabled
+      >
+        Start AI Analysis
+      </button>
+    </div>
+  </section>
+
+<!-- ================= FEATURES SECTION ================= -->
+<section class="features-section" id="features">
+
+  <!-- Intro -->
+  <div class="features-intro">
+    <span class="features-eyebrow">Built for Photographers</span>
+    <h2>Cull Faster. Choose Better. Stay in Flow.</h2>
+    <p>
+      CullAI removes the most time-consuming part of photography —
+      sorting through hundreds of near-identical shots —
+      while keeping you fully in control.
+    </p>
+  </div>
+
+  <!-- Primary Features -->
+  <div class="features-grid primary">
+
+    <div class="feature-card highlight">
+      <div class="feature-icon">⚡</div>
+      <h3>Instant AI Culling</h3>
+      <p>
+        Automatically separate sharp and blurry photos in seconds.
+        Spend time editing — not scrolling.
+      </p>
+    </div>
+
+    <div class="feature-card highlight">
+      <div class="feature-icon">🎯</div>
+      <h3>Adjustable Sharpness</h3>
+      <p>
+        Tune the sharpness threshold to match your camera,
+        lens, and shooting style.
+      </p>
+    </div>
+
+    <div class="feature-card highlight">
+      <div class="feature-icon">🧠</div>
+      <h3>Photographer-Centric AI</h3>
+      <p>
+        Decisions based on focus clarity — not generic AI guesses.
+        Built to think like a photographer.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Secondary Features -->
+  <div class="features-grid secondary">
+
+    <div class="feature-card">
+      <div class="feature-icon">⌨️</div>
+      <h3>Pro Keyboard Workflow</h3>
+      <p>
+        Navigate, rate, compare, and select photos using
+        familiar shortcuts like Lightroom.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🖼️</div>
+      <h3>Side-by-Side Compare</h3>
+      <p>
+        Compare similar shots instantly to pick the
+        strongest frame without hesitation.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Privacy-First by Design</h3>
+      <p>
+        Images are processed locally during analysis.
+        Nothing is permanently stored.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= CTA SECTION ================= -->
+<section class="cta-section">
+
+  <div class="cta-card">
+    <h2>Ready to Cull Smarter?</h2>
+    <p>
+      Upload your photos and let CullAI instantly separate
+      the keepers from the misses — no signup required.
+    </p>
+
+    <div class="cta-actions">
+      <button class="btn primary cta-btn" id="ctaStartBtn">
+        Start Culling →
+      </button>
+      <span class="cta-hint">
+        Max 20 images · Up to 10MB · Privacy-first
+      </span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="how-it-works-section" id="how-it-works">
+
+  <div class="how-intro">
+    <span class="how-eyebrow">Simple Workflow</span>
+    <h2>How CullAI Works</h2>
+    <p>
+      From upload to selection in minutes.
+      No learning curve. No complicated setup.
+    </p>
+  </div>
+
+  <div class="how-steps">
+
+    <div class="how-step">
+      <div class="step-number">01</div>
+      <h3>Upload Your Photos</h3>
+      <p>
+        Drag and drop up to 20 images.
+        Everything stays on your device during analysis.
+      </p>
+    </div>
+
+    <div class="how-step">
+      <div class="step-number">02</div>
+      <h3>AI Analyzes Sharpness</h3>
+      <p>
+        CullAI evaluates focus clarity and visual sharpness
+        — just like a photographer would.
+      </p>
+    </div>
+
+    <div class="how-step">
+      <div class="step-number">03</div>
+      <h3>Review & Compare</h3>
+      <p>
+        Instantly see sharp and blurry groups,
+        compare similar shots, and rate your picks.
+      </p>
+    </div>
+
+    <div class="how-step">
+      <div class="step-number">04</div>
+      <h3>Download the Keepers</h3>
+      <p>
+        Download only the best images —
+        or fine-tune selections before exporting.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= FAQ SECTION ================= -->
+<section class="faq-section" id="faq">
+
+  <div class="faq-intro">
+    <span class="faq-eyebrow">Need Clarity?</span>
+    <h2>Frequently Asked Questions</h2>
+    <p>
+      Everything you need to know before using CullAI.
+    </p>
+  </div>
+
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Is my data uploaded to a server?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>
+          No. During the current prototype phase, images are processed
+          locally in your browser and are never permanently stored.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>How does CullAI decide if an image is sharp?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>
+          CullAI analyzes focus clarity using sharpness metrics similar
+          to how photographers judge detail and edge definition.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Can I adjust how strict the AI is?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>
+          Yes. You can control the sharpness threshold both before and
+          after analysis to fine-tune results instantly.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>What file types are supported?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>
+          CullAI supports all common image formats including JPG, PNG,
+          JPEG, and RAW image files from popular cameras.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>Is this meant to replace Lightroom?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>
+          No. CullAI is designed to handle the initial culling step so
+          you can spend more time editing in tools like Lightroom.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer" id="footer">
+
+  <!-- Ambient glow -->
+  <div class="footer-glow"></div>
+
+  <div class="footer-container">
+
+    <!-- Brand -->
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="logo-icon">📷</span>
+        <span class="logo-text">CullAI</span>
+      </div>
+
+      <p class="footer-tagline">
+        CullAI helps photographers move faster by removing the
+        most frustrating part of the workflow — choosing.
+      </p>
+
+      <div class="footer-meta">
+        <span class="meta-pill success">Prototype</span>
+        <span class="meta-pill">Privacy-First</span>
+        <span class="meta-pill">Built for Speed</span>
+      </div>
+    </div>
+
+    <!-- Links -->
+    <div class="footer-links">
+
+      <div class="footer-column">
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it Works</a>
+        <a href="#faq">FAQ</a>
+        <a href="#upload">Start Culling</a>
+      </div>
+
+      <div class="footer-column">
+        <h4>Resources</h4>
+        <a href="#" data-panel="privacy">Privacy Policy</a>
+<a href="#" data-panel="terms">Terms of Use</a>
+<a href="#" data-panel="contact">Contact</a>
+
+      </div>
+
+      <div class="footer-column">
+        <h4>Focus</h4>
+        <span class="footer-note">
+          Designed to disappear so your photos stand out.
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Closing message -->
+  <div class="footer-closure">
+    <p>
+      Stop scrolling. Start trusting your best shots.
+    </p>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer-bottom">
+    <span>© 2025 CullAI</span>
+    <span class="footer-credit">
+      Crafted with clarity & intent
+    </span>
+  </div>
+
+</footer>
+
+
+<!-- ===================== AI PROCESSING OVERLAY ===================== -->
+<div class="ai-overlay hidden" id="aiOverlay">
+  <div class="ai-panel">
+
+    <div class="ai-loader">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+
+    <h3>Analyzing Your Photos</h3>
+    <p id="aiStatus">
+      Detecting sharpness and focus…
+    </p>
+
+  </div>
+</div>
+
+
+<!-- ================= GLOBAL LOADER ================= -->
+<div class="global-loader hidden" id="globalLoader">
+  <div class="loader-spinner"></div>
+  <p>Processing…</p>
+</div>
+
+<!-- ================= TOAST CONTAINER ================= -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ================= SHORTCUTS OVERLAY ================= -->
+<div class="shortcuts-overlay hidden" id="shortcutsOverlay">
+  <div class="shortcuts-backdrop"></div>
+
+  <div class="shortcuts-panel">
+    <h3>Keyboard Shortcuts</h3>
+
+    <div class="shortcut-group">
+      <h4>Navigation</h4>
+      <p><kbd>←</kbd> / <kbd>→</kbd> Navigate images</p>
+      <p><kbd>Esc</kbd> Close preview / overlay</p>
+    </div>
+
+    <div class="shortcut-group">
+      <h4>Selection</h4>
+      <p><kbd>Space</kbd> Select / Deselect image</p>
+      <p><kbd>S</kbd> Mark Sharp</p>
+      <p><kbd>B</kbd> Mark Blurry</p>
+    </div>
+
+    <div class="shortcut-group">
+      <h4>Rating</h4>
+      <p><kbd>1</kbd>–<kbd>5</kbd> Star rating</p>
+      <p><kbd>G</kbd> Green label</p>
+      <p><kbd>Y</kbd> Yellow label</p>
+      <p><kbd>R</kbd> Red label</p>
+    </div>
+
+    <div class="shortcut-group">
+      <h4>Compare</h4>
+      <p>Select 2 images → <kbd>Compare</kbd> button</p>
+    </div>
+
+    <div class="shortcut-footer">
+      Press <kbd>?</kbd> anytime to toggle this panel
+    </div>
+  </div>
+</div>
+
+<!-- ================= FOOTER INFO PANEL ================= -->
+<div class="footer-panel hidden" id="footerPanel">
+
+  <div class="footer-panel-header">
+    <h3 id="footerPanelTitle">Title</h3>
+    <button class="footer-panel-close">✕</button>
+  </div>
+
+  <div class="footer-panel-content" id="footerPanelContent">
+    <!-- Injected dynamically -->
+  </div>
+
+</div>
+
+
+<script src="three-scene.js" defer></script>
+<script src="ui.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
