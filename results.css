@@ -846,3 +846,21 @@ kbd {
   background: rgba(74, 222, 128, 0.15);
   color: #4ade80;
 }
+
+/* ------------------ RESPONSIVE ------------------ */
+
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 70px;
+    padding: 80px 28px 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-bottom {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+}
