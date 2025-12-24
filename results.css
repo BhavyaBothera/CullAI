@@ -864,3 +864,86 @@ kbd {
     text-align: center;
   }
 }
+
+/* =========================================================
+   MOBILE BUTTON FIX — PRODUCTION SAFE
+   ========================================================= */
+
+/* ---------- UNIVERSAL TOUCH IMPROVEMENTS ---------- */
+@media (max-width: 768px) {
+  .btn {
+    min-height: 48px;              /* Apple / Google tap standard */
+    padding: 12px 20px;
+    font-size: 15px;
+    border-radius: 14px;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ---------- APP BAR BUTTON FIX ---------- */
+@media (max-width: 768px) {
+  .app-bar {
+    position: relative;
+  }
+
+  .app-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .app-right .btn {
+    flex: 1;
+  }
+}
+
+/* ---------- MOBILE ACTION BAR ---------- */
+.mobile-action-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-action-bar {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: 500;
+
+    display: flex;
+    gap: 12px;
+
+    background: rgba(18,22,36,.92);
+    backdrop-filter: blur(14px);
+    padding: 12px;
+    border-radius: 18px;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  }
+
+  .mobile-action-bar .btn {
+    flex: 1;
+    font-size: 15px;
+  }
+}
+
+/* ---------- HIDE DESKTOP BUTTONS ON MOBILE ---------- */
+@media (max-width: 768px) {
+  .app-right {
+    display: none;
+  }
+}
+
+/* ---------- SAFE AREA (iPhone gesture bar) ---------- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .mobile-action-bar {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 768px) {
+  .photo-card.selected {
+    transform: scale(0.96);
+  }
+}

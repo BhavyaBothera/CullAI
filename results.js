@@ -693,3 +693,176 @@ function updateSummary() {
   - Sorting / filtering
   - Real backend result binding
 */
+
+/* =========================================================
+   LONG PRESS → MULTI SELECT (MOBILE ONLY)
+   ========================================================= */
+
+let longPressTimer = null;
+let selectionMode = false;
+let selectedPhotos = new Set();
+
+const LONG_PRESS_DURATION = 450;
+
+function enableLongPressSelection() {
+  document.querySelectorAll('.photo-card').forEach(card => {
+
+    /* ---------- TOUCH START ---------- */
+    card.addEventListener('touchstart', (e) => {
+      if (selectionMode) return;
+
+      longPressTimer = setTimeout(() => {
+        selectionMode = true;
+        toggleSelection(card);
+        triggerHaptic();
+      }, LONG_PRESS_DURATION);
+    });
+
+    /* ---------- TOUCH MOVE (CANCEL) ---------- */
+    card.addEventListener('touchmove', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    /* ---------- TOUCH END ---------- */
+    card.addEventListener('touchend', (e) => {
+      clearTimeout(longPressTimer);
+
+      // If already in selection mode → tap toggles selection
+      if (selectionMode) {
+        e.preventDefault();
+        toggleSelection(card);
+      }
+    });
+  });
+}
+
+/* ---------- TOGGLE SELECTION ---------- */
+function toggleSelection(card) {
+  const id = card.dataset.id || card;
+
+  card.classList.toggle('selected');
+
+  if (card.classList.contains('selected')) {
+    selectedPhotos.add(id);
+  } else {
+    selectedPhotos.delete(id);
+  }
+
+  updateSelectionUI();
+}
+
+/* ---------- UPDATE UI ---------- */
+function updateSelectionUI() {
+  const chip = document.querySelector('.selection-chip');
+  const mobileBar = document.querySelector('.mobile-action-bar');
+
+  if (selectedPhotos.size > 0) {
+    chip?.classList.remove('hidden');
+    mobileBar?.classList.add('active');
+    chip.textContent = `${selectedPhotos.size} selected`;
+  } else {
+    selectionMode = false;
+    chip?.classList.add('hidden');
+    mobileBar?.classList.remove('active');
+  }
+}
+
+/* ---------- HAPTIC FEEDBACK ---------- */
+function triggerHaptic() {
+  if (navigator.vibrate) {
+    navigator.vibrate(30);
+  }
+}
+
+/* ---------- INIT ---------- */
+window.addEventListener('load', () => {
+  if ('ontouchstart' in window) {
+    enableLongPressSelection();
+  }
+});
+
+/* =========================================================
+   BUTTON ACTIONS — MOBILE + DESKTOP
+   ========================================================= */
+
+/* ---------- HELPERS ---------- */
+function getAllPhotoCards() {
+  return Array.from(document.querySelectorAll('.photo-card'));
+}
+
+function getSelectedCards() {
+  return Array.from(document.querySelectorAll('.photo-card.selected'));
+}
+
+/* ---------- SELECT ALL ---------- */
+function selectAllPhotos() {
+  selectionMode = true;
+
+  getAllPhotoCards().forEach(card => {
+    card.classList.add('selected');
+    selectedPhotos.add(card.dataset.id || card);
+  });
+
+  updateSelectionUI();
+}
+
+/* ---------- CLEAR SELECTION ---------- */
+function clearSelection() {
+  getSelectedCards().forEach(card => {
+    card.classList.remove('selected');
+  });
+
+  selectedPhotos.clear();
+  selectionMode = false;
+  updateSelectionUI();
+}
+
+/* ---------- EXPORT (MOCK / REAL) ---------- */
+function exportSelectedPhotos() {
+  const selected = getSelectedCards();
+
+  if (!selected.length) {
+    alert('No photos selected');
+    return;
+  }
+
+  // 👉 Replace this with real export logic
+  const files = selected.map(card =>
+    card.querySelector('img')?.src
+  );
+
+  console.log('Exporting:', files);
+
+  alert(`Exporting ${files.length} photos`);
+}
+
+/* =========================================================
+   BUTTON WIRING
+   ========================================================= */
+
+function bindButtons() {
+  /* Desktop buttons */
+  document.querySelectorAll('[data-action="select-all"]').forEach(btn =>
+    btn.addEventListener('click', selectAllPhotos)
+  );
+
+  document.querySelectorAll('[data-action="export"]').forEach(btn =>
+    btn.addEventListener('click', exportSelectedPhotos)
+  );
+
+  document.querySelectorAll('[data-action="clear"]').forEach(btn =>
+    btn.addEventListener('click', clearSelection)
+  );
+
+  /* Mobile action bar buttons */
+  document.querySelector('.mobile-action-bar')?.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+
+    btn.dataset.action === 'select-all' && selectAllPhotos();
+    btn.dataset.action === 'export' && exportSelectedPhotos();
+  });
+}
+
+/* ---------- INIT ---------- */
+window.addEventListener('load', bindButtons);
